@@ -1,0 +1,6 @@
+# Ignore IDE specific directories or files
+.idea/
+.vscode/
+
+# Ignore compiled binary files and other build output directories
+bin/
