@@ -1,37 +1,44 @@
 using Microsoft.EntityFrameworkCore;
 using TestEFCore.Data;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure and register the EF Core DbContext with a SQLite connection string.
-// In production scenarios, you could move the connection string to appsettings.json.
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=myapp.db"));
+// 1) Configuration: make sure you load your JSON file here
+//    (WebApplication.CreateBuilder does this by default)
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile(
+        $"appsettings.{builder.Environment.EnvironmentName}.json",
+        optional: true, reloadOnChange: true);
 
-// Register controller services.
+// 2) Read your connection string (must match key in appsettings.json)
+var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrEmpty(conn))
+{
+    throw new InvalidOperationException("Missing DefaultConnection string");
+}
+
+// 3) Register your DbContext **before** you call Build()
+builder.Services.AddDbContext<AppDbContext>(opts =>
+    opts.UseSqlite(conn));
+
+// 4) Register controllers, Swagger, etc.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Build the application.
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyApp API V1");
-});
-
-// Apply any pending migrations automatically on startup.
-using (var scope = app.Services.CreateScope())
+using(var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }
 
-// Map controller routes.
+app.UseSwagger();
+app.UseSwaggerUI();
+
+
 app.MapControllers();
 
-// Run the application.
 app.Run();
