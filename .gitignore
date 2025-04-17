@@ -4,3 +4,4 @@
 
 # Ignore compiled binary files and other build output directories
 bin/
+obj/
