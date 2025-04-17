@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TestEFCore.Data;
@@ -88,6 +89,29 @@ namespace TestEFCore.Controller;
             await _dbContext.SaveChangesAsync();
 
             return NoContent();
+        }
+        
+        [HttpGet("version")]
+        public ActionResult<object> GetVersions()
+        {
+            // EF Core version
+            var efAssembly = typeof(DbContext).Assembly;
+            var efVersion = efAssembly.GetName().Version?.ToString() 
+                            ?? "Unknown";
+
+            // .NET runtime version
+            // Option A: CLR version
+            var clrVersion = Environment.Version.ToString();
+
+            // Option B: full framework description
+            var frameworkDescription = RuntimeInformation.FrameworkDescription;
+
+            return Ok(new
+            {
+                EntityFrameworkCore = efVersion,
+                ClrVersion = clrVersion,
+                FrameworkDescription = frameworkDescription
+            });
         }
 
         private bool ProductExists(int id)
