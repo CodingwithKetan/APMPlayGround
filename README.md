@@ -16,6 +16,8 @@ _Should print_ `active`
 
 ---
 
+### How to download RabbitMQ server 
+https://www.rabbitmq.com/docs/download
 
 ### Which shold we consider 
 Currently OTEL is testing with Version 6.0.0 to 7.0.0 so we should consider that.
