@@ -1,6 +1,0 @@
-@SystemDataSQlClientWebAPI_HostAddress = http://localhost:5070
-
-GET {{SystemDataSQlClientWebAPI_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
