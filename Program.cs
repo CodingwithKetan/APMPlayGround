@@ -1,31 +1,28 @@
-using MongoDB.Driver;
-using MongoDBWebAPI.Model;
-using MongoDBWebAPI.Services;
+using RedisWebAPI.Services;
+using StackExchange.Redis;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// bind settings from configuration
-builder.Services.Configure<MongoDBSettings>(
-    builder.Configuration.GetSection("MongoDBSettings"));
+// 1) Redis connection multiplexer
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+    ConnectionMultiplexer.Connect(
+        builder.Configuration.GetSection("Redis:ConnectionString").Value!));
 
-// register the TodoService as singleton
-builder.Services.AddSingleton<TodoService>();
+// 2) Our cache service
+builder.Services.AddScoped<IRedisCacheService, RedisCacheService>();
 
+// 3) Add controllers + Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// ── Print MongoDB.Driver version to console ──
-var driverAssembly = typeof(MongoClient).Assembly.GetName();
-Console.WriteLine($"MongoDB.Driver version: {driverAssembly.Version}");
+// 4) Middleware
 
-
-// middleware
-
-app.UseSwagger();
-app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

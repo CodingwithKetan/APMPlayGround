@@ -1,9 +1,9 @@
 ## Prerequisites
 
-Ensure MongoDB is running before you publish or run the app:
+Ensure Redis is running before you publish or run the app:
 
 ### How to download postgresql
-https://www.mongodb.com/try/download/community
+https://redis.io/docs/latest/operate/oss_and_stack/install/archive/install-redis/
 
 
 ### Which shold we consider 
@@ -14,7 +14,7 @@ Currently OTEL is testing with Version 2.19.0 and so we should consider that.
 Publish your app as a single, self‑contained Linux binary:
 
 ```bash
-dotnet publish -c Release -r linux-x64 -f net8.0 --self-contained true /p:PublishSingleFile=true -o ./publish/linux64 -p:LibraryVersion=2.19.0
+dotnet publish -c Release -r linux-x64 -f net8.0 --self-contained true /p:PublishSingleFile=true -o ./publish/linux64 -p:LibraryVersion=2.6.122
 ```
 
 ---
@@ -40,15 +40,15 @@ dotnet publish -c Release -r linux-x64 -f net8.0 --self-contained true /p:Publis
 - **`-o ./publish/linux64`**  
   Outputs the published files into the `./publish/linux64` directory.
 
-- **`-p:LibraryVersion=9.0.0`**  
-  here we are specifying that version of NpgSQLversion if 9.0.0
+- **`-p:LibraryVersion=2.6.122`**  
+  here we are specifying that version of StackExchange.Redis if we want 2.6.122
 
 ---
 
 ### if the .Net SDK present in System then use below command for to run application 
 
 ```bash
-dotnet run -f net8.0 /p:LibraryVersion=2.19.0
+dotnet run -f net8.0 /p:LibraryVersion=2.6.122
 ```
 
 - Here you can update dotnet framework and library version as you want.
