@@ -1,0 +1,6 @@
+@MSDataSQLClientWebAPI_HostAddress = http://localhost:5154
+
+GET {{MSDataSQLClientWebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

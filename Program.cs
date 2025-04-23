@@ -1,25 +1,24 @@
-
-
-using MySQLWebAPI.Services;
+using MSDataSQLClientWebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1) Register our MySqlService
+// 1) Configure connection string
+var connStr = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// 2) Register the ProductService for CRUD
 builder.Services.AddSingleton<IProductService, ProductService>();
 
-// 2) Add controllers + Swagger
+// 3) Add controllers and Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// 3) Enable Swagger in Development
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

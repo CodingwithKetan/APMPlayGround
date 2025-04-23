@@ -1,6 +1,6 @@
-using MySQLWebAPI.Model;
+using MSDataSQLClientWebAPI.Model;
 
-namespace MySQLWebAPI.Services;
+namespace MSDataSQLClientWebAPI.Services;
 
 public interface IProductService
 {

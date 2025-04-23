@@ -1,53 +1,50 @@
-using MySqlConnector;
-using MySQLWebAPI.Model;
+using Microsoft.Data.SqlClient;
+using MSDataSQLClientWebAPI.Model;
 
-namespace MySQLWebAPI.Services;
-
+namespace MSDataSQLClientWebAPI.Services;
 
 public class ProductService : IProductService
 {
     private readonly string _connStr;
     public ProductService(IConfiguration config)
     {
-        _connStr = config["MySQL:ConnectionString"]!;
+        _connStr = config.GetConnectionString("DefaultConnection")!;
         EnsureTable();
     }
 
     private void EnsureTable()
     {
-        using var conn = new MySqlConnection(_connStr);
+        using var conn = new SqlConnection(_connStr);
         conn.Open();
         using var cmd = conn.CreateCommand();
         cmd.CommandText = @"
-          CREATE TABLE IF NOT EXISTS Products (
-            Id    INT PRIMARY KEY AUTO_INCREMENT,
-            Name  VARCHAR(100) NOT NULL,
-            Price DECIMAL(18,2) NOT NULL
-          )";
+          IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Products')
+            CREATE TABLE Products (
+              Id    INT IDENTITY(1,1) PRIMARY KEY,
+              Name  NVARCHAR(100) NOT NULL,
+              Price DECIMAL(18,2)  NOT NULL
+            );";
         cmd.ExecuteNonQuery();
     }
 
     public async Task<int> CreateAsync(Product p)
     {
-        await using var conn = new MySqlConnection(_connStr);
+        await using var conn = new SqlConnection(_connStr);
         await conn.OpenAsync();
         await using var cmd = conn.CreateCommand();
         cmd.CommandText = @"
           INSERT INTO Products (Name, Price)
           VALUES (@n, @p);
-          SELECT LAST_INSERT_ID();";
+          SELECT CAST(SCOPE_IDENTITY() AS INT);";
         cmd.Parameters.AddWithValue("@n", p.Name);
         cmd.Parameters.AddWithValue("@p", p.Price);
-        var raw = await cmd.ExecuteScalarAsync();
-        var newId = Convert.ToUInt64(raw);
-        return (int)newId;
-
+        return (int)await cmd.ExecuteScalarAsync()!;
     }
 
     public async Task<IEnumerable<Product>> GetAllAsync()
     {
         var list = new List<Product>();
-        await using var conn = new MySqlConnection(_connStr);
+        await using var conn = new SqlConnection(_connStr);
         await conn.OpenAsync();
         await using var cmd = conn.CreateCommand();
         cmd.CommandText = "SELECT Id, Name, Price FROM Products";
@@ -65,7 +62,7 @@ public class ProductService : IProductService
 
     public async Task<Product?> GetByIdAsync(int id)
     {
-        await using var conn = new MySqlConnection(_connStr);
+        await using var conn = new SqlConnection(_connStr);
         await conn.OpenAsync();
         await using var cmd = conn.CreateCommand();
         cmd.CommandText = "SELECT Id, Name, Price FROM Products WHERE Id = @i";
@@ -81,7 +78,7 @@ public class ProductService : IProductService
 
     public async Task<bool> UpdateAsync(int id, Product p)
     {
-        await using var conn = new MySqlConnection(_connStr);
+        await using var conn = new SqlConnection(_connStr);
         await conn.OpenAsync();
         await using var cmd = conn.CreateCommand();
         cmd.CommandText = @"
@@ -91,18 +88,16 @@ public class ProductService : IProductService
         cmd.Parameters.AddWithValue("@n", p.Name);
         cmd.Parameters.AddWithValue("@p", p.Price);
         cmd.Parameters.AddWithValue("@i", id);
-        var rows = await cmd.ExecuteNonQueryAsync();
-        return rows > 0;
+        return await cmd.ExecuteNonQueryAsync() > 0;
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        await using var conn = new MySqlConnection(_connStr);
+        await using var conn = new SqlConnection(_connStr);
         await conn.OpenAsync();
         await using var cmd = conn.CreateCommand();
         cmd.CommandText = "DELETE FROM Products WHERE Id = @i";
         cmd.Parameters.AddWithValue("@i", id);
-        var rows = await cmd.ExecuteNonQueryAsync();
-        return rows > 0;
+        return await cmd.ExecuteNonQueryAsync() > 0;
     }
 }

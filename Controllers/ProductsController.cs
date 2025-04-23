@@ -1,22 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
-using MySQLWebAPI.Model;
-using MySQLWebAPI.Services;
+using MSDataSQLClientWebAPI.Model;
+using MSDataSQLClientWebAPI.Services;
 
-namespace MySQLWebAPI.Controller;
+namespace MSDataSQLClientWebAPI.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("products")]
 public class ProductsController : ControllerBase
 {
     private readonly IProductService _svc;
     public ProductsController(IProductService svc) => _svc = svc;
 
-    // GET /products
     [HttpGet]
-    public async Task<IActionResult> GetAll()
-        => Ok(await _svc.GetAllAsync());
+    public async Task<IActionResult> GetAll() => Ok(await _svc.GetAllAsync());
 
-    // GET /products/5
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -24,30 +21,25 @@ public class ProductsController : ControllerBase
         return p is null ? NotFound() : Ok(p);
     }
 
-    // POST /products
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] Product p)
     {
-        var newId = await _svc.CreateAsync(p);
-        p.Id = newId;
-        return CreatedAtAction(nameof(GetById), new { id = newId }, p);
+        var id = await _svc.CreateAsync(p);
+        p.Id = id;
+        return CreatedAtAction(nameof(GetById), new { id }, p);
     }
 
-    // PUT /products/5
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] Product p)
     {
-        if (!await _svc.UpdateAsync(id, p))
-            return NotFound();
+        if (!await _svc.UpdateAsync(id, p)) return NotFound();
         return NoContent();
     }
 
-    // DELETE /products/5
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        if (!await _svc.DeleteAsync(id))
-            return NotFound();
+        if (!await _svc.DeleteAsync(id)) return NotFound();
         return NoContent();
     }
 }
