@@ -7,14 +7,14 @@ https://www.microsoft.com/en-in/sql-server/sql-server-downloads
 
 
 ### Which shold we consider 
-Currently OTEL is testing with Version 5.2.2 and so we should consider that.
+Currently OTEL is testing with Version 4.8.6 and so we should consider that.
 
 ## Generate Self‑Contained App
 
 Publish your app as a single, self‑contained Linux binary:
 
 ```bash
-dotnet publish -c Release -r linux-x64 -f net8.0 --self-contained true /p:PublishSingleFile=true -o ./publish/linux64 -p:LibraryVersion=5.2.2
+dotnet publish -c Release -r linux-x64 -f net8.0 --self-contained true /p:PublishSingleFile=true -o ./publish/linux64 -p:LibraryVersion=4.8.6
 ```
 
 ---
@@ -40,15 +40,15 @@ dotnet publish -c Release -r linux-x64 -f net8.0 --self-contained true /p:Publis
 - **`-o ./publish/linux64`**  
   Outputs the published files into the `./publish/linux64` directory.
 
-- **`-p:LibraryVersion=5.2.2`**  
-  here we are specifying that version of MySQL Connector if we want 5.2.2
+- **`-p:LibraryVersion=4.8.6`**  
+  here we are specifying that version of MySQL Connector if we want 4.8.6
 
 ---
 
 ### if the .Net SDK present in System then use below command for to run application 
 
 ```bash
-dotnet run -f net8.0 /p:LibraryVersion=5.2.2
+dotnet run -f net8.0 /p:LibraryVersion=4.8.6
 ```
 
 - Here you can update dotnet framework and library version as you want.

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using MSDataSQLClientWebAPI.Model;
-using MSDataSQLClientWebAPI.Services;
+using SystemDataSQlClientWebAPI.Models;
+using SystemDataSQlClientWebAPI.Services;
 
-namespace MSDataSQLClientWebAPI.Controllers;
+namespace SystemDataSQlClientWebAPI.Controllers;
 
 [ApiController]
 [Route("products")]

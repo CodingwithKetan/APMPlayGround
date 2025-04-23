@@ -1,6 +1,6 @@
-using MSDataSQLClientWebAPI.Model;
+using SystemDataSQlClientWebAPI.Models;
 
-namespace MSDataSQLClientWebAPI.Services;
+namespace SystemDataSQlClientWebAPI.Services;
 
 public interface IProductService
 {

@@ -1,24 +1,21 @@
-using MSDataSQLClientWebAPI.Services;
+using SystemDataSQlClientWebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1) Configure connection string
-var connStr = builder.Configuration.GetConnectionString("DefaultConnection");
-
-// 2) Register the ProductService for CRUD
+// Register the ProductService for CRUD operations
 builder.Services.AddSingleton<IProductService, ProductService>();
 
-// 3) Add controllers and Swagger
+// Add controllers and Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Enable Swagger UI in Development
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

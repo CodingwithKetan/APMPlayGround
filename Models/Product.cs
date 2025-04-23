@@ -1,4 +1,4 @@
-namespace MSDataSQLClientWebAPI.Model;
+namespace SystemDataSQlClientWebAPI.Models;
 
 public class Product
 {

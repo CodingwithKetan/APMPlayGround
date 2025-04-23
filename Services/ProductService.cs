@@ -1,7 +1,7 @@
-using Microsoft.Data.SqlClient;
-using MSDataSQLClientWebAPI.Model;
+using System.Data.SqlClient;
+using SystemDataSQlClientWebAPI.Models;
 
-namespace MSDataSQLClientWebAPI.Services;
+namespace SystemDataSQlClientWebAPI.Services;
 
 public class ProductService : IProductService
 {
