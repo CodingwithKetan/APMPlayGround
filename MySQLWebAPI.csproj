@@ -2,14 +2,14 @@
 
   <PropertyGroup>
     <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
-    <LibraryVersion>2.6.122</LibraryVersion>
+    <LibraryVersion>2.0.0</LibraryVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="StackExchange.Redis" VersionOverride="$(LibraryVersion)" />
+    <PackageReference Include="MySqlConnector" VersionOverride="$(LibraryVersion)" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1" />
   </ItemGroup>
 

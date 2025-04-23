@@ -1,28 +1,25 @@
-using RedisWebAPI.Services;
-using StackExchange.Redis;
 
+
+using MySQLWebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1) Redis connection multiplexer
-builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
-    ConnectionMultiplexer.Connect(
-        builder.Configuration.GetSection("Redis:ConnectionString").Value!));
+// 1) Register our MySqlService
+builder.Services.AddSingleton<IProductService, ProductService>();
 
-// 2) Our cache service
-builder.Services.AddScoped<IRedisCacheService, RedisCacheService>();
-
-// 3) Add controllers + Swagger
+// 2) Add controllers + Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// 4) Middleware
-
+// 3) Enable Swagger in Development
+if (app.Environment.IsDevelopment())
+{
     app.UseSwagger();
     app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
