@@ -45,7 +45,7 @@ Currently OTEL is testing with Version 8.0.5 and so we should consider that.
 Publish your app as a single, self‑contained Linux binary:
 
 ```bash
-dotnet publish -c Release -r linux-x64 -f net8.0 --self-contained true /p:PublishSingleFile=true -o ./publish/linux64
+dotnet publish -c Release -r linux-x64 -f net8.0 --self-contained true /p:PublishSingleFile=true -o ./publish/linux64 -p:LibraryVersion=9.0.0
 ```
 
 ---
@@ -71,6 +71,9 @@ dotnet publish -c Release -r linux-x64 -f net8.0 --self-contained true /p:Publis
 - **`-o ./publish/linux64`**  
   Outputs the published files into the `./publish/linux64` directory.
 
+- **`-p:LibraryVersion=9.0.0`**  
+  here we are specifying that version of NpgSQLversion if 9.0.0
+
 ---
 
 ### if the .Net SDK present in System then use below command for to run application 
@@ -80,4 +83,4 @@ dotnet run -f net8.0 /p:LibraryVersion=6.0.0
 ```
 
 - Here you can update dotnet framework and library version as you want.
-```
+```	
