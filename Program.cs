@@ -1,47 +1,38 @@
-using RabbitMQWebAPI.RabbitMQ;
-using RabbitMQWebAPI.RabbitMQ.Impl;
-using RabbitMQWebAPI.Services;
-using RabbitMQWebAPI.Services.Contracts;
-using RabbitMQWebAPI.Services.Impl;
+using Npgsql;
 
- public class Program
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddControllers();
+
+// Add Swagger services
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
     {
-        public static void Main(string[] args)
-        {
-            var host = CreateHostBuilder(args).Build();
-            host.Run();
-        }
+        Title = "PostgreSQL Operations API",
+        Version = "v1",
+        Description = "A demo API for PostgreSQL database operations with Npgsql"
+    });
+});
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.ConfigureServices(services =>
-                    {
-                        // Register services and controllers
-                        services.AddControllers();
+// Print library versions at startup
+var npgsqlVersion = typeof(NpgsqlConnection).Assembly.GetName().Version;
+Console.WriteLine($"Npgsql Version: {npgsqlVersion}");
 
-                        // Add Swagger generation
-                        services.AddSwaggerGen();
+var app = builder.Build();
 
-                        services.AddSingleton<IRabbitMQPublisher, RabbitMQPublisher>();
-                        services.AddSingleton<IRabbitMQConsumer, RabbitMQConsumer>();
-                        services.AddSingleton<IOrderService, OrderService>();
-                        services.AddHostedService<RabbitMQConsumerHostedService>();
-                    });
+// Configure the HTTP request pipeline.
 
-                    webBuilder.Configure(app =>
-                    {
-                        app.UseRouting();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "PostgreSQL Operations API V1");
+    });
 
-                        app.UseSwagger();
-                        app.UseSwaggerUI();
 
-                        app.UseEndpoints(endpoints =>
-                        {
-                            endpoints.MapControllers();  // Map controllers
-                        });
-                    });
-                });
-    }
-
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
