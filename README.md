@@ -37,7 +37,7 @@ GRANT ALL PRIVILEGES ON DATABASE testapm TO sa;
 If you prefer a different username/password, just replace sa and 'admin' above consistently.
 
 
-### Which shold we consider 
+### Which version should we consider 
 Currently OTEL is testing with Version 8.0.5 and so we should consider that.
 
 ## Generate Self‑Contained App
@@ -79,7 +79,7 @@ dotnet publish -c Release -r linux-x64 -f net8.0 --self-contained true /p:Publis
 ### if the .Net SDK present in System then use below command for to run application 
 
 ```bash
-dotnet run -f net8.0 /p:LibraryVersion=6.0.0
+dotnet run -f net8.0 /p:LibraryVersion=9.0.0
 ```
 
 - Here you can update dotnet framework and library version as you want.
