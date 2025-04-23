@@ -1,38 +1,34 @@
-using Npgsql;
+using MongoDB.Driver;
+using MongoDBWebAPI.Model;
+using MongoDBWebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// bind settings from configuration
+builder.Services.Configure<MongoDBSettings>(
+    builder.Configuration.GetSection("MongoDBSettings"));
+
+// register the TodoService as singleton
+builder.Services.AddSingleton<TodoService>();
+
 builder.Services.AddControllers();
-
-// Add Swagger services
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
-    {
-        Title = "PostgreSQL Operations API",
-        Version = "v1",
-        Description = "A demo API for PostgreSQL database operations with Npgsql"
-    });
-});
-
-// Print library versions at startup
-var npgsqlVersion = typeof(NpgsqlConnection).Assembly.GetName().Version;
-Console.WriteLine($"Npgsql Version: {npgsqlVersion}");
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ── Print MongoDB.Driver version to console ──
+var driverAssembly = typeof(MongoClient).Assembly.GetName();
+Console.WriteLine($"MongoDB.Driver version: {driverAssembly.Version}");
 
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "PostgreSQL Operations API V1");
-    });
 
+// middleware
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
 app.Run();
