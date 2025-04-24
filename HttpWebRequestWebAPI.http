@@ -1,6 +1,0 @@
-@HttpWebRequestWebAPI_HostAddress = http://localhost:5245
-
-GET {{HttpWebRequestWebAPI_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
