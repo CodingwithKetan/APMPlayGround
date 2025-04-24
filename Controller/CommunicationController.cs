@@ -1,49 +1,58 @@
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HttpClientWebAPI.Controller;
+namespace HttpWebRequestWebAPI.Controller;
 
 [ApiController]
 [Route("api/communication")]
 public class CommunicationController : ControllerBase
 {
-    private readonly HttpClient _httpClient;
-
-    public CommunicationController()
-    {
-        _httpClient = new HttpClient();
-    }
+    
+    private HttpWebRequest _httpWebRequest;
 
     [HttpGet("call")]
-    public async Task<IActionResult> Call([FromQuery] string url)
+    public IActionResult Call([FromQuery] string url)
     {
         if (string.IsNullOrWhiteSpace(url))
             return BadRequest("Please provide a valid `url` query parameter.");
 
         try
         {
-            var response = await _httpClient.GetAsync(url);
-            var content = await response.Content.ReadAsStringAsync();
-            var mediaType = response.Content.Headers.ContentType?.ToString() ?? "text/plain";
-            return Content(content, mediaType);
+            // initialize the request
+            _httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            _httpWebRequest.Method = "GET";
+
+            using var response = (HttpWebResponse)_httpWebRequest.GetResponse();
+            using var stream   = response.GetResponseStream();
+            using var reader   = new StreamReader(stream!);
+            var body           = reader.ReadToEnd();
+            var contentType    = response.ContentType;
+
+            return Content(body, contentType);
+        }
+        catch (WebException we)
+        {
+            var errorDetail = (we.Response as HttpWebResponse) is HttpWebResponse errResp
+                ? $"{(int)errResp.StatusCode} {errResp.StatusDescription}"
+                : we.Message;
+            return BadRequest($"Error calling `{url}`: {errorDetail}");
         }
         catch (Exception ex)
         {
-            return BadRequest($"Error calling `{url}`: {ex.Message}");
+            return BadRequest($"Unexpected error calling `{url}`: {ex.Message}");
         }
     }
     
-    [HttpGet("call-remote")]
-    public async Task<IActionResult> CallThirdParty()
+    [HttpGet("call-dummy")]
+    public IActionResult CallDummy()
     {
-        // Example public API
-        var url = "https://jsonplaceholder.typicode.com/todos/1";
-        var json = await _httpClient.GetStringAsync(url);
-        return Content(json, "application/json");
+        const string dummyUrl = "https://jsonplaceholder.typicode.com/todos/1";
+        return Call(dummyUrl);
     }
     
     [HttpGet("status")]
     public IActionResult Status()
     {
-        return Ok("returning from HttpClient");
+        return Ok("returning from HttpWebRequestWebAPI");
     }
 }
