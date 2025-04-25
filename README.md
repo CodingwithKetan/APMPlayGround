@@ -4,21 +4,15 @@
 
 2. **Pull Oracle XE Docker Image**  
    ```bash
-   # Official community image with Oracle XE
    docker pull gvenzl/oracle-xe:latest
 ```
-
-
-3. **Run the Oracle XE Container**  
-   ```bash
-   # Run container on port 1521 with default password
-   docker run -d \
-     --name oracle-xe \
-     -e ORACLE_PASSWORD=Oracle123 \
-     -p 1521:1521 \
-     gvenzl/oracle-xe:latest
-   # Wait ~2 minutes for initialization
 ```
+
+3. **Run the Oracle XE Container**
+```bash
+   docker run -d  --name oracle-xe -e ORACLE_PASSWORD=Oracle123 -p 1521:1521 gvenzl/oracle-xe:latest
+```
+
 
 4. **Verify Container is Running**
    ```bash
